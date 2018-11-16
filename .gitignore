@@ -1,0 +1,11 @@
+*.pyc
+*.*~
+*.tmp
+*.nc
+*.out
+*#
+*.bsh
+*.csv
+*.asc
+*.dat
+ferret.jnl
