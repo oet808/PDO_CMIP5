@@ -2,6 +2,8 @@
 # mon2ann updated to work with CMIP5
 # multi-model ensemble
 # code based on mon2ann for CLENS ensemble
+# NOTE: This script selects first the default
+#       year ranges defined in cmip5.py
 
 #!/usr/bin/python
 ###############################################################################
@@ -19,11 +21,11 @@ import os
 from cmip5 import *
 
 
-def calc_ann_mean(scen,run,v,realm=none):
+def calc_ann_mean(scen,model,run,v,realm=None):
     """calculates annual mean from monthly mean data using CDO.
     
     Input variables:
-        scen,run,v are strings indicating the scenario, 
+        scen,model,run,v are strings indicating the scenario, 
         ensemble member run, and the variable name.
         These variables are used to form the netcdf file names
         that are processed with cdo.
@@ -34,22 +36,23 @@ def calc_ann_mean(scen,run,v,realm=none):
     app="ann" # app is used in the output file name
     model_scen=TRANSLATE[scen]['scen']
     model_time=TRANSLATE[scen]['time']
-    infile="cmip5_"+model_scen+"_"+v+"_"+MODEL+"_"+v+"_"+run+".nc"
+    infile="cmip5_"+model_scen+"_"+v+"_"+model+"_"+run+".nc"
     # Input path and output path are the same 
     # for input files that are itself not the 
     # original data files
 
     # adjust outpath to the subfolder structure 
-    if realm != none:
-        subdir_out=model_scen+"/"+realm+"/"
+    if realm != None:
+        subdir_out=model_scen+"/"+realm+"/"+v+"/"
     else:
-        subdir_out=model_scen+"/"
-    outfile=MODEL+"_"+model_scen+"_"+v+"_"+model_time+"_"+run+\
+        subdir_out=model_scen+"/"+v+"/"
+    outfile=model+"_"+model_scen+"_"+v+"_"+model_time+"_"+run+\
     "_"+app+".nc" 
+    first_year=str(TRANSLATE[scen]['first_year'])
+    last_year=str(TRANSLATE[scen]['last_year'])
     if CORRECT_ANN_CALENDAR:
-        first_year=str(TRANSLATE[scen]['first_year'])
         os.system("rm buffer.nc buffer2.nc")
-        cdo="cdo -v -timselmean,12 "+OUTPATH+sudir_out+infile+" buffer.nc"
+        cdo="cdo -v -selyear,"+first_year+"/"+last_year+" -timselmean,12 "+DPATH+infile+" buffer.nc"
         print(cdo)
         os.system(cdo)
         print("use cdo to overwrite time dimension / correct the calendar")
@@ -58,7 +61,7 @@ def calc_ann_mean(scen,run,v,realm=none):
         print(cdo)
         os.system(cdo)
     else:
-        cdo="cdo -v -timselmean,12 "+OUTPATH+infile\
+        cdo="cdo -v -selyear,"+first_year+"/"+last_year+" -timselmean,12 "+OUTPATH+infile\
         +" "+OUTPATH+subdir_out+outfile
         print(cdo)
         os.system(cdo)
@@ -73,12 +76,13 @@ def calc_ann_mean(scen,run,v,realm=none):
 iscen=0
 for scen in SCENARIOLIST:
     nmodel=0
-    for run in ENSEMBLELIST:
-        i=0
-        for v in VARLIST:
-            calc_ann_mean(scen,run,v)
-            i+=1
-    nmodel+=1
+    for model in MODELLIST:
+        for run in ENSEMBLELIST:
+            i=0
+            for v in VARLIST:
+                calc_ann_mean(scen,model,run,v,realm="ocn")
+                i+=1
+        nmodel+=1
     print ("----------------------------------------------------------")
     print ("stats for simulations "+scen+" : variable "+v)
     print ("models: "+str(nmodel)+" variables: "+str(i))

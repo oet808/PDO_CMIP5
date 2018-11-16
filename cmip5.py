@@ -7,7 +7,7 @@ The test version does include a single scenario and single ensemble run.
 """
 
 # Path to the directory with the source netcdf files
-DPATH="/network/rit/lab/elisontimmlab_rit/kf835882/python" # must always end with '/'
+DPATH="/network/rit/lab/elisontimmlab_rit/kf835882/python/" # must always end with '/'
 
 # output data path
 OUTPATH="/data/elisontimm_scr/DATA/CMIP5/IPRC/" # must always end with '/'
@@ -44,8 +44,10 @@ ENSEMBLELIST=['r1i1p1_1']
 # Use of nested dictionaries allows for additional 
 # 'translations'
 ###############################################################################
-TRANSLATE={'historical':{'scen':'historical','time':'',"first_year":1901},\
-                    'rcp85':{'scen':'rcp85','time':'',"first_year":2006}}
+TRANSLATE={'historical':{'scen':'historical','time':'1900-2005','first_year':1900,\
+            'last_year':2005},\
+            'rcp85':{'scen':'rcp85','time':'2006-2099','first_year':2006,\
+            'last_year':2099}}
 
 
 ###############################################################################
