@@ -10,9 +10,11 @@
 # Script that calls CDO
 # linux command to calculate annual mean
 # This is the unweighted mean (Jan, Feb, Mar, Apr hav same weight)
-# IMPORTANT: THE CLENS monthly mean data have a time axis shifted 
-# by one month! Feb in year i is the monthly mean of January year i
+# IMPORTANT: It could be the case that some model output of monthly mean data 
+# have a time axis shifted by one month (see CLENS data for example)! 
+# Feb in year i is the monthly mean of January year i
 # Dec is Nov mean, and Jan year i+1 is the average of Dec year i!
+# when creating annual mean output this could lead to a shift by one year
 ###############################################################################
 
 import os
@@ -25,13 +27,13 @@ def calc_ann_mean(scen,model,run,v,realm=None):
     """calculates annual mean from monthly mean data using CDO.
     
     Input variables:
-        scen,model,run,v are strings indicating the scenario, 
-        ensemble member run, and the variable name.
-        These variables are used to form the netcdf file names
-        that are processed with cdo.
-        realm is an optional string argument corresponding to the 
-        variable processed that is used for the subfolder structure
-        of the CMIP5 model.
+        scen,model,run,v: strings indicating the scenario, 
+            ensemble member run, and the variable name.
+            These variables are used to form the netcdf file names
+            that are processed with cdo.
+        realm: an optional string argument corresponding to the 
+            variable processed that is used for the subfolder structure
+            of the CMIP5 model.
     """
     app="ann" # app is used in the output file name
     model_scen=TRANSLATE[scen]['scen']
@@ -61,7 +63,7 @@ def calc_ann_mean(scen,model,run,v,realm=None):
         print(cdo)
         os.system(cdo)
     else:
-        cdo="cdo -v -selyear,"+first_year+"/"+last_year+" -timselmean,12 "+OUTPATH+infile\
+        cdo="cdo -v -selyear,"+first_year+"/"+last_year+" -yearmean "+DPATH+infile\
         +" "+OUTPATH+subdir_out+outfile
         print(cdo)
         os.system(cdo)

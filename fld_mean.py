@@ -26,7 +26,7 @@ def global_mean(scen,model,run,v,realm='None'):
     app="fldmean" # app is used in the output file name
     model_scen=TRANSLATE[scen]['scen']
     model_time=TRANSLATE[scen]['time']
-     # adjust outpath to the subfolder structure 
+    # adjust outpath to the subfolder structure 
     if realm != None:
         subdir_out=model_scen+"/"+realm+"/"+v+"/"
     else:
@@ -45,13 +45,13 @@ def global_mean(scen,model,run,v,realm='None'):
     print ("Folder:  "+OUTPATH+subdir_out)
     return
 
-
 # Loop over scenarios
 iscen=0
 for scen in SCENARIOLIST:
     print ("scenario: "+scen)
     nmodel=0
     for model in MODELLIST:
+        print ("model: "+model)
         for run in ENSEMBLELIST:
             i=0
             for v in VARLIST:

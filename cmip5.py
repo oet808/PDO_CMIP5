@@ -13,12 +13,17 @@ DPATH="/network/rit/lab/elisontimmlab_rit/kf835882/python/" # must always end wi
 OUTPATH="/data/elisontimm_scr/DATA/CMIP5/IPRC/" # must always end with '/'
 
 # CMIP5 scenarios
-SCENARIOLIST=["historical","rcp85"]
+SCENARIOLIST=["historical","rcp45"]
 
 # multi-model ensemble (like CMIP5) should use MODELLIST
 # to iterate over model members
-MODELLIST=["ACCESS1-0","ACCESS1-3"]
-
+MODELLIST=['ACCESS1-0','ACCESS1-3','bcc-csm1-1-m','bcc-csm1-1','CanESM2',\
+            'CCSM4','CESM1-BGC','CESM1-CAM5','CMCC-CMS',\
+            'FIO-ESM','GFDL-CM3','GFDL-ESM2G','GFDL-ESM2M',\
+            'HadGEM2-AO','HadGEM2-CC','HadGEM2-ES','inmcm4','IPSL-CM5A-LR',\
+            'IPSL-CM5A-MR','MIROC5','MIROC-ESM-CHEM','MPI-ESM-LR','MPI-ESM-MR',\
+            'MRI-CGCM3','NorESM1-ME','NorESM1-M']
+MODELLIST=['ACCESS1-0']
 # realm (model component "atm","ocn")
 REALMLIST= ["ocn"]
 # only SST (TOS) processed here, but can iterate over several variables in a file
@@ -46,6 +51,8 @@ ENSEMBLELIST=['r1i1p1_1']
 ###############################################################################
 TRANSLATE={'historical':{'scen':'historical','time':'1900-2005','first_year':1900,\
             'last_year':2005},\
+            'rcp45':{'scen':'rcp45','time':'2006-2099','first_year':2006,\
+            'last_year':2099},\
             'rcp85':{'scen':'rcp85','time':'2006-2099','first_year':2006,\
             'last_year':2099}}
 
@@ -56,7 +63,17 @@ TRANSLATE={'historical':{'scen':'historical','time':'1900-2005','first_year':190
 
 # APPLY time coordinate correction to when calculating 
 # annual mean data from monthly data
-CORRECT_ANN_CALENDAR=True 
+# Note: this was a problem with the output data from CLENS
+# here we assume that the default is that all netcdf files 
+# have a correct monthly time representation: January 1850 is 
+# the monthly mean of the model time steps within Jan 1850.
+# One way to test this: for each model plot a NH regional 
+# SST climatology in the North Pacific for example and 
+# compare the timing of min and max SST.
+# (It could be necessary to correct individual models, in which case
+# a list or dictionary should be indicating which model needs a correction?)
+
+CORRECT_ANN_CALENDAR=False 
 
 # climatology: start and end years for the averaging
 START=1975
