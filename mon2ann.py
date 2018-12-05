@@ -4,7 +4,7 @@
 # code based on mon2ann for CLENS ensemble
 # NOTE: This script selects first the default
 #       year ranges defined in cmip5.py
-
+# to show how git works, I add a comment here
 #!/usr/bin/python
 ###############################################################################
 # Script that calls CDO
