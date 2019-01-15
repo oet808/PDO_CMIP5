@@ -62,7 +62,12 @@ def save_result(scen,run,varname,x,time,lat,lon,copy_from_source,\
         print("save_result: could not find attribute 'long_name' for copying")
         xeof.attrs['units']='1' # eigenvectors of unit length
     ds=xarray.Dataset({varname:xeof})
-    ds.to_netcdf(OUTPATH+subdir_out+outfile,format="NETCDF4")
+    try:
+        ds.to_netcdf(OUTPATH+subdir_out+outfile,format="NETCDF4")
+    except:
+        ds.to_netcdf(OUTPATH+subdir_out+outfile)
+        print("Note: could not save with format='NETCDF4'")
+        print("Use default netcdf format associated with to_netcdf()")
     print ("Output file with residuals:")
     print (OUTPATH+subdir_out+outfile)
     print(ds)
@@ -146,7 +151,7 @@ def linreg(scen,model,run,v,realm=None):
         lon=nc1.lon,\
         copy_from_source=nc1[v],realm='ocn')
 
-                
+
 # Loop over scenarios
 iscen=0
 for scen in SCENARIOLIST:
