@@ -9,12 +9,18 @@
 # Eigenvectors (PCA pattern) in eof.nc
 # PC time series and explained variance in pc.nc
 ###############################################################################
-# HISTORY:
-# 2018-07-19:OET: Corrected in function save_results the attributes 
+# HISTORY
+# 2019-01-15 by OET:
+#   function save_result()
+#   xarray support of NETCDF4 output format is system
+#   dependent. Changed function call to_netcdf() to 
+#   try NETCDF4 or if fails use the default netcdf format  
+# 2018-07-1 by OET: 
+#   Corrected in function save_results the attributes 
 #   for variable eof in netcdf output.
 #   Updated the regional domain selection: lat,lon boundaries are now 
 #   added to the cmip5.py module as a tuple (lonw,lone,lats,latn) 
-#   REGION_PDO.    
+#   REGION_PDO.
 ###############################################################################
 
 import xarray
@@ -99,8 +105,12 @@ def save_result(eof,pc,time,lat,lon,expvar,copy_from_source,dflt_units='k'):
     xeof.attrs['long_name']="eigenvector" # check if that is right
     xeof.attrs['units']='1' # eigenvectors of unit length
     ds1=xarray.Dataset({'eof':xeof})
-    print(ds1)
-    ds1.to_netcdf('eof.nc',format="NETCDF4")
+    try:
+        ds1.to_netcdf("eof.nc",format="NETCDF4")
+    except:
+        ds1.to_netcdf("eof.nc")
+        print("Note: could not save with format='NETCDF4'")
+        print("Use default netcdf format associated with to_netcdf()")
 
     # issues with level dimension in ferret so write to separate file
     # but include expvar in here
@@ -116,8 +126,12 @@ def save_result(eof,pc,time,lat,lon,expvar,copy_from_source,dflt_units='k'):
     xexpvar.attrs['long_name']='explained variance'
     xexpvar.attrs['units']='percent'
     ds2=xarray.Dataset({'pc':xpc,'expvar':xexpvar})
-    print(ds2)
-    ds2.to_netcdf('pc.nc',format="NETCDF4")
+    try:
+        ds2.to_netcdf("pc.nc",format="NETCDF4")
+    except:
+        ds2.to_netcdf("pc.nc")
+        print("Note: could not save with format='NETCDF4'")
+        print("Use default netcdf format associated with to_netcdf()")
     return ds1,ds2
 
 

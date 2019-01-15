@@ -1,5 +1,5 @@
 #!/usr/bin/python
-###############################################################################
+##################################################################
 # calculate the linear regression
 # field using a netcdf 3-dim (time,lat,lon)
 # and 1-d (time) netcdf index series
@@ -12,7 +12,14 @@
 # the input data have a non-conformal time coordinate system
 # and the output with xarray cannot handle that information
 #
-###############################################################################
+##################################################################
+# History
+# 2019-01-15 by OET:
+#   function save_result()
+#   xarray support of NETCDF4 output format is system
+#   dependent. Changed function call to_netcdf() to 
+#   try NETCDF4 or if fails use the default netcdf format
+##################################################################
 
 import os
 import xarray
@@ -70,7 +77,6 @@ def save_result(scen,run,varname,x,time,lat,lon,copy_from_source,\
         print("Use default netcdf format associated with to_netcdf()")
     print ("Output file with residuals:")
     print (OUTPATH+subdir_out+outfile)
-    print(ds)
     return ds
 
 

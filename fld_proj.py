@@ -8,6 +8,13 @@
 ###############################################################################
 # Results: netcdf time series output
 ###############################################################################
+# HISTORY
+# 2019-01-15 by OET:
+#   function save_result()
+#   xarray support of NETCDF4 output format is system
+#   dependent. Changed function call to_netcdf() to 
+#   try NETCDF4 or if fails use the default netcdf format
+###############################################################################
 
 import xarray
 import numpy as np
@@ -62,7 +69,12 @@ def save_result(x,time,lev,copy_from_source,dflt_units='k'):
         xproj.attrs['units']=dflt_units # eigenvectors of unit length
         xproj.attrs['info']="projection onto ensemble mean EOF pattern in eof_ens_mean.nc"
     ds=xarray.Dataset({'proj':xproj})
-    ds.to_netcdf('proj.nc',format="NETCDF4")
+    try:
+        ds.to_netcdf("proj.nc",format="NETCDF4")
+    except:
+        ds.to_netcdf("proj.nc")
+        print("Note: could not save with format='NETCDF4'")
+        print("Use default netcdf format associated with to_netcdf()")
     return ds
 
 # APPLIED OPERATION 
